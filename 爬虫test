@@ -1,0 +1,49 @@
+import bs4
+import requests
+from bs4 import BeautifulSoup
+
+def Geturl():
+    urllist=[]
+    for i in range(2,21):
+        url='https://www.dxsbb.com/news/list_162_'+ str(i) +'.html'
+        urllist.append(url)
+    urllist.insert(0,'https://www.dxsbb.com/news/list_162.html')
+    htmllist=[]
+    for url in urllist:
+        html=requests.get(url)
+        htmllist.append(html.text)
+    #print (htmllist)
+    souplist=[]
+    urllist_2=[]
+    for html in htmllist:
+        soup=BeautifulSoup(html,"html.parser")
+        souplist.append(soup)
+    for soup in souplist:
+        soup1=soup.find_all('div',class_="b")
+        for soup2 in soup1:
+            soup3=soup2.find_all('a',class_='listtit')
+            for soup4 in soup3:   
+                soup5=soup4.get('href')
+                #print (soup5)
+                soup5=soup5.replace('..','https://www.dxsbb.com')
+                urllist_2.append(soup5)
+    #print (urllist_2)
+ 
+    souplist_2=[]
+    f1 = open(r"I:\python test\爬虫\专业排名.txt", "w+",encoding='utf-8')
+    #自己填txt文件地址
+    for url in urllist_2:
+        html=requests.get(url,timeout=10)
+        html.encoding='gb2312'
+        html=html.text
+        soup6=BeautifulSoup(html ,'html.parser')
+        soup7=soup6.select('#newsContent ')
+        #print (soup7)
+        for td in soup7:
+            tds=td.get_text()
+            f1.write(tds)
+            print (tds)
+    f1.close()
+
+if __name__ == '__main__':
+    Geturl()
