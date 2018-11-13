@@ -1,0 +1,15 @@
+import pymysql
+import sys
+flag=sys.argv[1]
+try:
+    
+    db = pymysql.connect(host="127.0.0.1", user="root", passwd="root", db="ctf" )
+    cursor = db.cursor()
+    sql="update flag set flag='"+flag+"' where id=1"
+    cursor.execute(sql)
+except Exception as e:
+    print (e)
+    db.rollback()
+
+cursor.close()
+db.close()
