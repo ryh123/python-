@@ -1,0 +1,19 @@
+import base64
+a=input("b16,b32,b64：")
+b=input("请输入密文：")
+c=""
+if a=="b16":
+    c=base64.b16decode(b)
+elif a=="b32":
+    c=base64.b32decode(b)
+elif a=="b64":
+    c=base64.b64decode(b)
+print (c)
+input()
+
+
+
+
+#可以打包成exe文件直接使用
+
+#pip install pyinstaller  
