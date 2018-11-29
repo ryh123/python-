@@ -1,0 +1,55 @@
+# -*- coding:utf-8 -*-
+import pymysql
+import json
+
+def getjson():
+    xmlist=[]
+    xblist=[]
+    sfzhlist=[]
+    csylist=[]
+    jglist=[]
+    bjhlist=[]
+    gkkshlist=[]
+    with open(r'', 'r',encoding = 'GB18030') as fp:      #读取txt中的json，可能会遇到解析编码的问题
+        data = json.load(fp)          #解析json
+        a=len(data["rows"])          #我解析的文件中是字典嵌套列表，列表嵌套字典的格式，所以用这种方式处理，提取我需要的字段
+        for i in range(0,32000):
+            xm=data["rows"][i]["xm"]
+            xmlist.append(xm)
+            xb=data["rows"][i]["xb"]
+            xblist.append(xb)
+            sfzh=data["rows"][i]["sfzh"]
+            sfzhlist.append(sfzh)
+            csy=data["rows"][i]["csy"]
+            csylist.append(csy)
+            jg=data["rows"][i]["jg"]
+            jglist.append(jg)
+            bjh=data["rows"][i]["bjh"]
+            bjhlist.append(bjh)
+            gkksh=data["rows"][i]["gkksh"]
+            gkkshlist.append(gkksh)
+    zbdxlist=[xmlist,xblist,sfzhlist,csylist,jglist,bjhlist,gkkshlist]
+    return zbdxlist
+
+
+#操作数据库，将提取的字段储存进入mysql数据库中
+def conndb():
+    zblist=getjson()
+    xm=zblist[0]
+    xb=zblist[1]
+    sfzh=zblist[2]
+    csy=zblist[3]
+    jg=zblist[4]
+    bjh=zblist[5]
+    gkksh=zblist[6]
+    db = pymysql.connect(host="127.0.0.1", user="root", passwd="root", db="zbdx",charset="utf8")
+    cursor = db.cursor()
+    for a,b,c,d,e,f,g in zip(xm,xb,sfzh,csy,jg,bjh,gkksh):
+        sql = "INSERT INTO student(xm,xb,sfzh,csy,jg,bjh,gkksh)VALUES('%s','%s','%s','%s','%s','%s','%s')" % (a,b,c,d,e,f,g)
+        cursor.execute(sql)
+    cursor.close()
+    db.close()
+
+if __name__ == '__main__':
+    #getjson()
+    conndb()
